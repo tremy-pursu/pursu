@@ -70,15 +70,23 @@
             justify-content: center; align-items: center; text-align: center;
         }
 
+        /* WATERMARK FIX: Container handles reveal, text handles float */
+        .wm-container {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 1.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+            margin-bottom: -4rem;
+            z-index: 0;
+        }
+
         .logo-watermark {
             font-family: 'Montserrat', sans-serif;
             font-size: clamp(8rem, 25vw, 15rem);
             font-weight: 700; letter-spacing: -0.05em;
             background: linear-gradient(135deg, rgba(166, 137, 102, 0.25) 0%, rgba(255,255,255,0.02) 100%);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            opacity: 0; margin-bottom: -4rem; transform: translateY(30px);
-            transition: all 1.5s cubic-bezier(0.2, 0.8, 0.2, 1);
             animation: float 6s ease-in-out infinite;
+            display: block;
         }
 
         #home-page-content { opacity: 0; transform: translateY(20px); transition: all 1.5s ease 0.3s; }
@@ -99,21 +107,33 @@
         }
         .cta-button:hover { background: var(--bronze-hover); transform: translateY(-5px) !important; transition: 0.4s; }
 
-        /* --- LIVE MARKET TICKER --- */
+        /* --- NEWSROOM GRADE TICKER --- */
         .market-ticker {
-            position: fixed; bottom: 0; width: 100%; background: rgba(0,0,0,0.9);
-            border-top: 1px solid rgba(166, 137, 102, 0.2); padding: 15px 0; z-index: 50;
-            font-family: 'Montserrat', sans-serif; font-size: 0.6rem;
-            letter-spacing: 0.2rem; text-transform: uppercase; overflow: hidden; white-space: nowrap;
+            position: fixed; bottom: 0; width: 100%; background: #000;
+            border-top: 1px solid rgba(166, 137, 102, 0.3); padding: 15px 0; z-index: 50;
+            overflow: hidden; display: flex;
         }
-        .ticker-content { 
-            display: inline-block; 
-            animation: tickerScroll 25s linear infinite;
+        
+        .ticker-track {
+            display: flex; flex-shrink: 0; white-space: nowrap;
+            will-change: transform;
+            animation: cnnScroll 45s linear infinite;
         }
-        .ticker-item { display: inline-block; margin-right: 5rem; color: rgba(255,255,255,0.4); }
-        .ticker-item span { color: var(--bronze-accent); font-weight: 700; margin-right: 10px; }
 
-        @keyframes tickerScroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+        .ticker-item {
+            display: flex; align-items: center; padding: 0 4rem;
+            font-family: 'Montserrat', sans-serif; font-size: 0.65rem;
+            letter-spacing: 0.2rem; text-transform: uppercase;
+            color: rgba(255,255,255,0.4);
+        }
+        
+        .ticker-item span { color: var(--bronze-accent); font-weight: 900; margin-right: 12px; }
+
+        @keyframes cnnScroll {
+            from { transform: translate3d(0, 0, 0); }
+            to { transform: translate3d(-100%, 0, 0); }
+        }
+
         @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
 
         .reveal { opacity: 0.7 !important; transform: translateY(0) !important; }
@@ -140,7 +160,9 @@
     </nav>
 
     <section class="hero">
-        <div class="logo-watermark" id="wm">Pursu.</div>
+        <div class="wm-container" id="wm">
+            <div class="logo-watermark">Pursu.</div>
+        </div>
         <div id="home-page-content">
             <span class="sub-head">Recruitment Redefined</span>
             <h1 class="main-head">Pursuing the<br><i>Perfect Match</i></h1>
@@ -148,66 +170,48 @@
         </div>
     </section>
 
-    <div class="market-ticker">
-        <div class="ticker-content" id="ticker-box">
-            <div class="ticker-item"><span>SYSTEM:</span> INITIALIZING SECURE FEED...</div>
+    <div class="market-ticker" id="ticker-box">
         </div>
-    </div>
 
 <script>
-    // Using your Published CSV link to ensure real-time data flow from Sheet1
     const G_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS2qYZ17GlB-55wPZSRcX82Ap4WrrfUFcjw8YK7pyNgGFEm8P8dZK5qe-1ob01A9GhhJRa4luCTL1rj/pub?gid=0&single=true&output=csv';
-    
-    // High-end fallback list
     const fallbackJobs = ["Executive Director", "Senior Technical Lead", "VP of Operations", "Head of Talent", "Chief of Staff"];
 
     async function fetchJobs() {
         try {
-            // Fetch with cache-busting to get the latest sheet updates
             const response = await fetch(`${G_URL}&cb=${Date.now()}`);
             if (!response.ok) throw new Error("Sync Interrupted");
-            
             const data = await response.text();
-            
-            // Parse CSV: removes quotes, trims whitespace, and skips empty rows
-            const rows = data.split('\n')
-                             .map(row => row.replace(/"/g, '').trim())
-                             .filter(row => row.length > 2);
-            
-            if (rows.length > 0) {
-                renderTicker(rows);
-            } else {
-                renderTicker(fallbackJobs);
-            }
+            const rows = data.split('\n').map(row => row.replace(/"/g, '').trim()).filter(row => row.length > 2);
+            renderTicker(rows.length > 0 ? rows : fallbackJobs);
         } catch (e) {
-            console.warn("Market sync paused. Reverting to internal pool.");
             renderTicker(fallbackJobs);
         }
     }
 
     function renderTicker(jobArray) {
         const tickerBox = document.getElementById('ticker-box');
-        // Duplicate the list for a seamless infinite loop animation
-        const items = [...jobArray, ...jobArray].map(job => `
-            <div class="ticker-item"><span>ACTIVE:</span> ${job.toUpperCase()}</div>
+        const trackContent = jobArray.map(job => `
+            <div class="ticker-item"><span>LIVE //</span> ${job.toUpperCase()}</div>
         `).join('');
-        tickerBox.innerHTML = items;
+
+        // Double-buffer for a perfectly seamless CNN-style loop
+        tickerBox.innerHTML = `
+            <div class="ticker-track">${trackContent}</div>
+            <div class="ticker-track">${trackContent}</div>
+        `;
     }
 
-    // Refresh the feed every 60 seconds
     setInterval(fetchJobs, 60000);
 
-    // INTERACTIVE SPOTLIGHT (Cursor Effect)
     const spotlight = document.getElementById('cursor-spotlight');
     document.addEventListener('mousemove', (e) => {
         spotlight.style.left = e.clientX + 'px';
         spotlight.style.top = e.clientY + 'px';
     });
 
-    // PAGE REVEAL SEQUENCE
     window.addEventListener('load', () => {
-        fetchJobs(); // Initial fetch
-        
+        fetchJobs();
         const overlay = document.getElementById('intro-overlay');
         const wm = document.getElementById('wm');
         const content = document.getElementById('home-page-content');
