@@ -9,6 +9,76 @@
     <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,500;1,700&family=Montserrat:wght@700&display=swap" rel="stylesheet">
     
     <style>
+        /* --- TALENT PAGE OVERLAY --- */
+#talent-page {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100vh;
+    background: var(--bg-dark);
+    z-index: 200;
+    display: none; /* Hidden until clicked */
+    overflow-y: auto;
+    padding: 8rem 10% 5rem 10%;
+}
+
+.talent-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-top: 3rem;
+}
+
+.job-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(166, 137, 102, 0.2);
+    backdrop-filter: blur(10px);
+    padding: 2.5rem;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    overflow: hidden;
+}
+
+.job-card:hover {
+    border-color: var(--bronze-accent);
+    transform: translateY(-10px);
+    background: rgba(166, 137, 102, 0.05);
+}
+
+.job-card h3 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.9rem;
+    letter-spacing: 2px;
+    margin-bottom: 1rem;
+    color: var(--bronze-accent);
+}
+
+.job-card p {
+    font-size: 1.1rem;
+    color: rgba(255,255,255,0.7);
+    margin-bottom: 2rem;
+}
+
+.job-link {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.6rem;
+    letter-spacing: 2px;
+    text-decoration: none;
+    color: #fff;
+    border-bottom: 1px solid var(--bronze-accent);
+    padding-bottom: 5px;
+}
+
+.close-talent {
+    position: fixed;
+    top: 2.5rem;
+    right: 10%;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.7rem;
+    letter-spacing: 3px;
+    color: var(--bronze-accent);
+    cursor: pointer;
+    z-index: 201;
+}
         :root {
             --bg-dark: #000000;
             --cream-white: #f5f5f0;
