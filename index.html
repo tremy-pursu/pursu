@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pursu. | Pursuing the Perfect Match</title>
+    <title>Pursu. | Talent Portal</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,500;1,700&family=Montserrat:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,500;1,700&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
     
     <style>
         :root {
@@ -14,18 +14,16 @@
             --cream-white: #f5f5f0;
             --bronze-accent: rgba(166, 137, 102, 0.85);
             --bronze-hover: rgba(186, 157, 122, 1);
+            --glass: rgba(255, 255, 255, 0.03);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; cursor: default; }
-        a, button { cursor: pointer; }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             background-color: var(--bg-dark);
             color: var(--cream-white);
             font-family: 'EB Garamond', serif; 
-            overflow: hidden;
-            line-height: 1.2;
-            height: 100vh;
+            line-height: 1.4;
+            overflow-x: hidden;
         }
 
         /* --- PRESTIGE OVERLAYS --- */
@@ -36,112 +34,151 @@
         }
 
         #cursor-spotlight {
-            position: fixed; top: 0; left: 0; width: 450px; height: 450px;
-            background: radial-gradient(circle, rgba(166, 137, 102, 0.12) 0%, transparent 70%);
+            position: fixed; top: 0; left: 0; width: 500px; height: 500px;
+            background: radial-gradient(circle, rgba(166, 137, 102, 0.08) 0%, transparent 70%);
             border-radius: 50%; pointer-events: none;
             transform: translate(-50%, -50%); z-index: 1; 
         }
 
-        /* --- INTRO OVERLAY --- */
-        #intro-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
-            background-color: #000000; display: flex; justify-content: center; align-items: center;
-            z-index: 1000; transition: opacity 1.5s ease, filter 1.5s ease;
-        }
-        .melting-logo { width: 180px; mix-blend-mode: screen; filter: contrast(1.2) brightness(1.1); }
-        .melt-away { filter: blur(35px) opacity(0); pointer-events: none; }
-
         /* --- NAVIGATION --- */
         nav {
             display: flex; justify-content: space-between; align-items: center;
-            padding: 2.5rem 10%; position: absolute; width: 100%;
+            padding: 2rem 5%; position: fixed; width: 100%;
             z-index: 100; font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(to bottom, black, transparent);
         }
-        .logo-text { font-weight: 700; letter-spacing: 6px; font-size: 1.2rem; color: var(--bronze-accent); cursor: pointer; }
+        .logo-text { font-weight: 700; letter-spacing: 6px; font-size: 1.2rem; color: var(--bronze-accent); }
         .nav-links a {
-            text-decoration: none; color: rgba(255, 255, 255, 0.4);
-            font-size: 0.75rem; letter-spacing: 0.15rem; text-transform: uppercase;
-            transition: 0.4s; margin-left: 3rem; font-weight: 700;
+            text-decoration: none; color: rgba(255, 255, 255, 0.6);
+            font-size: 0.7rem; letter-spacing: 0.15rem; text-transform: uppercase;
+            transition: 0.4s; margin-left: 2rem; font-weight: 700;
         }
-        .nav-links a:hover, .nav-links a.active { color: var(--bronze-accent); }
+        .nav-links a:hover { color: var(--bronze-accent); }
 
-        /* --- CONTENT WRAPPERS --- */
-        .content-section {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100vh;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            text-align: center; opacity: 0; visibility: hidden; pointer-events: none;
-            transition: opacity 0.8s ease, transform 0.8s ease;
-            z-index: 5; padding: 0 10%;
+        /* --- SEARCH SECTION --- */
+        .search-container {
+            padding-top: 15vh;
+            width: 80%;
+            max-width: 1000px;
+            margin: 0 auto 5vh auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            z-index: 10;
+            position: relative;
         }
-        .content-section.active { opacity: 1; visibility: visible; pointer-events: auto; transform: translateY(0); }
 
-        /* --- WATERMARK --- */
-        .logo-watermark {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+        .search-bar {
+            display: grid;
+            grid-template-columns: 2fr 1fr 0.5fr;
+            gap: 10px;
+            background: var(--glass);
+            padding: 10px;
+            border: 1px solid rgba(166, 137, 102, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        input, select {
+            background: transparent;
+            border: none;
+            padding: 15px;
+            color: var(--cream-white);
             font-family: 'Montserrat', sans-serif;
-            font-size: clamp(8rem, 25vw, 15rem);
-            font-weight: 700; letter-spacing: -0.05em;
-            background: linear-gradient(135deg, rgba(166, 137, 102, 0.25) 0%, rgba(255,255,255,0.02) 100%);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            z-index: 2; pointer-events: none;
-            opacity: 0; transition: opacity 1.5s ease;
+            font-size: 0.8rem;
+            outline: none;
         }
 
-        /* --- HERO SECTION --- */
-        .sub-head {
-            font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5rem;
-            color: rgba(255,255,255,0.5); display: block; margin-bottom: 1rem;
+        .search-btn {
+            background: var(--bronze-accent);
+            color: white;
+            border: none;
             font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
         }
-        .main-head { font-weight: 400; font-size: clamp(2rem, 7vw, 3.5rem); line-height: 1.1; margin-bottom: 3.5rem; }
-        .main-head i { font-style: italic; font-weight: 500; color: var(--bronze-accent); }
 
-        .cta-button {
-            font-family: 'Montserrat', sans-serif; font-weight: 700;
-            background: var(--bronze-accent); backdrop-filter: blur(10px);
-            color: #fff; padding: 1.4rem 4rem; text-decoration: none;
-            font-size: 0.8rem; letter-spacing: 0.2rem; border: 1px solid rgba(255, 255, 255, 0.15);
-            transition: 0.4s; display: inline-block;
+        .search-btn:hover { background: var(--bronze-hover); }
+
+        /* --- JOB FEED --- */
+        .job-grid {
+            width: 80%;
+            max-width: 1000px;
+            margin: 0 auto 100px auto;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            z-index: 10;
+            position: relative;
         }
-        .cta-button:hover { background: var(--bronze-hover); transform: translateY(-5px); }
 
-        /* --- STACKED TALENT PAGE --- */
-        #talent-page { justify-content: flex-start; padding-top: 15vh; overflow-y: auto; scrollbar-width: none; }
-        #talent-page::-webkit-scrollbar { display: none; }
-        
-        .stack-container { width: 100%; max-width: 900px; display: flex; flex-direction: column; gap: 40vh; padding-bottom: 20vh; }
-        
-        .opp-card {
-            background: rgba(10, 10, 10, 0.95);
-            border: 1px solid rgba(166, 137, 102, 0.1);
-            padding: 4rem; min-height: 350px; width: 100%;
-            position: sticky; top: 15vh;
-            display: flex; flex-direction: column; justify-content: center; text-align: left;
-            box-shadow: 0 -20px 50px rgba(0,0,0,0.8);
-            transition: border-color 0.4s;
+        .job-card {
+            background: var(--glass);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 30px;
+            transition: 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
-        .opp-card:hover { border-color: var(--bronze-accent); }
-        .card-tag { font-family: 'Montserrat'; font-size: 0.6rem; color: var(--bronze-accent); letter-spacing: 3px; margin-bottom: 1.5rem; }
 
-        /* --- TESTIMONY / ABOUT PAGE --- */
-        .text-block { max-width: 800px; text-align: left; }
-        .text-block p { font-size: 1.6rem; margin-bottom: 2rem; color: rgba(255,255,255,0.7); line-height: 1.4; }
+        .job-card:hover {
+            border-color: var(--bronze-accent);
+            transform: translateY(-5px);
+            background: rgba(166, 137, 102, 0.03);
+        }
 
-        /* --- LIVE MARKET TICKER --- */
+        .job-info h3 {
+            font-size: 1.8rem;
+            color: var(--bronze-accent);
+            margin-bottom: 5px;
+            font-weight: 400;
+        }
+
+        .job-meta {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: rgba(255,255,255,0.5);
+        }
+
+        .job-meta span { margin-right: 20px; }
+        .salary { color: var(--cream-white); font-weight: 700; }
+
+        .view-job {
+            padding: 12px 25px;
+            border: 1px solid var(--bronze-accent);
+            color: var(--bronze-accent);
+            text-decoration: none;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.7rem;
+            font-weight: 700;
+            transition: 0.3s;
+        }
+
+        .view-job:hover {
+            background: var(--bronze-accent);
+            color: white;
+        }
+
+        /* --- TICKER --- */
         .market-ticker {
             position: fixed; bottom: 0; width: 100%; background: rgba(0,0,0,0.9);
-            border-top: 1px solid rgba(166, 137, 102, 0.2); padding: 15px 0; z-index: 150;
+            border-top: 1px solid rgba(166, 137, 102, 0.2); padding: 15px 0; z-index: 110;
             font-family: 'Montserrat', sans-serif; font-size: 0.6rem;
             letter-spacing: 0.2rem; text-transform: uppercase; overflow: hidden; white-space: nowrap;
         }
-        .ticker-content { display: inline-block; animation: tickerScroll 25s linear infinite; }
+        .ticker-content { display: inline-block; animation: tickerScroll 30s linear infinite; }
         .ticker-item { display: inline-block; margin-right: 5rem; color: rgba(255,255,255,0.4); }
         .ticker-item span { color: var(--bronze-accent); font-weight: 700; margin-right: 10px; }
 
         @keyframes tickerScroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
 
-        .reveal { opacity: 0.7 !important; }
+        @media (max-width: 768px) {
+            .search-bar { grid-template-columns: 1fr; }
+            .job-card { flex-direction: column; align-items: flex-start; gap: 20px; }
+        }
     </style>
 </head>
 <body>
@@ -149,112 +186,79 @@
     <div class="noise-overlay"></div>
     <div id="cursor-spotlight"></div>
 
-    <div id="intro-overlay">
-        <img src="logo.png" alt="Pursu Logo" class="melting-logo">
-    </div>
-
     <nav>
-        <div class="logo-text" onclick="showSection('home-page')">PURSU.</div>
+        <div class="logo-text">PURSU.</div>
         <div class="nav-links">
-            <a href="javascript:void(0)" onclick="showSection('talent-page')">Talent</a>
-            <a href="javascript:void(0)" onclick="showSection('home-page')">Employers</a>
-            <a href="javascript:void(0)" onclick="showSection('testimony-page')">Our Testimony</a>
-            <a href="mailto:contact@pursu.com">Contact</a>
+            <a href="#">Talent</a>
+            <a href="#">Employers</a>
+            <a href="#">Contact</a>
+            <a href="#">Testimony</a>
         </div>
     </nav>
 
-    <div class="logo-watermark" id="wm">Pursu.</div>
-
-    <section class="content-section active" id="home-page">
-        <span class="sub-head">Recruitment Redefined</span>
-        <h1 class="main-head">Pursuing the<br><i>Perfect Match</i></h1>
-        <a href="javascript:void(0)" onclick="showSection('talent-page')" class="cta-button">EXPLORE OPPORTUNITIES</a>
-    </section>
-
-    <section class="content-section" id="talent-page">
-        <div class="stack-container" id="job-stack">
-            </div>
-    </section>
-
-    <section class="content-section" id="testimony-page">
-        <div class="text-block">
-            <span class="sub-head" style="color: var(--bronze-accent);">Our Philosophy</span>
-            <h2 class="main-head" style="margin-bottom: 2rem;">Elite Talent. <br><i>Absolute Transparency.</i></h2>
-            <p>Pursu was founded on a simple mandate: cut the noise. We don't believe in volume; we believe in architectural precision.</p>
-            <p>By focusing exclusively on Tier 1 Software Engineers and the world's most ambitious firms, we ensure every match is a masterstroke.</p>
-            <a href="mailto:contact@pursu.com" class="cta-button">INITIATE PARTNERSHIP</a>
+    <header class="search-container">
+        <span style="font-family: 'Montserrat'; font-size: 0.7rem; letter-spacing: 4px; text-transform: uppercase; color: var(--bronze-accent);">Exclusive Opportunities</span>
+        <h1 style="font-size: 3rem; font-weight: 400; margin-top: -10px;">Find your <i>Next Pursuit.</i></h1>
+        
+        <div class="search-bar">
+            <input type="text" placeholder="Job Title, Skills, or Keywords">
+            <select>
+                <option>All Locations</option>
+                <option>Remote</option>
+                <option>New York, NY</option>
+                <option>London, UK</option>
+            </select>
+            <button class="search-btn">SEARCH</button>
         </div>
-    </section>
+    </header>
+
+    <section class="job-grid" id="job-feed">
+        </section>
 
     <div class="market-ticker">
         <div class="ticker-content" id="ticker-box">
-            <div class="ticker-item"><span>SYSTEM:</span> INITIALIZING SECURE FEED...</div>
+            <div class="ticker-item"><span>SYSTEM:</span> STREAMING LATEST OPPORTUNITIES...</div>
         </div>
     </div>
 
 <script>
-    const G_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS2qYZ17GlB-55wPZSRcX82Ap4WrrfUFcjw8YK7pyNgGFEm8P8dZK5qe-1ob01A9GhhJRa4luCTL1rj/pub?gid=0&single=true&output=csv';
-    const fallbackJobs = ["Executive Director", "Senior Technical Lead", "VP of Operations", "Head of Talent", "Chief of Staff"];
+    // Expanded data to mimic Robert Half style
+    const jobs = [
+        { title: "Executive Director", loc: "New York / Remote", salary: "$180k - $220k", industry: "Finance", posted: "2h ago" },
+        { title: "VP of Engineering", loc: "San Francisco", salary: "$250k - $310k", industry: "Tech", posted: "5h ago" },
+        { title: "Senior Legal Counsel", loc: "London", salary: "£140k - £170k", industry: "Legal", posted: "1d ago" },
+        { title: "Head of Operations", loc: "Hybrid", salary: "$160k - $190k", industry: "Logistics", posted: "3h ago" }
+    ];
 
-    function showSection(id) {
-        document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
-        
-        // Update nav active state
-        document.querySelectorAll('.nav-links a').forEach(a => {
-            a.classList.toggle('active', a.innerText.toLowerCase().includes(id.split('-')[0]));
-        });
-    }
-
-    async function fetchJobs() {
-        try {
-            const response = await fetch(`${G_URL}&cb=${Date.now()}`);
-            const data = await response.text();
-            const rows = data.split('\n').map(row => row.replace(/"/g, '').trim()).filter(row => row.length > 2);
-            renderContent(rows.length > 0 ? rows : fallbackJobs);
-        } catch (e) {
-            renderContent(fallbackJobs);
-        }
-    }
-
-    function renderContent(jobArray) {
-        // Render Ticker
-        const tickerBox = document.getElementById('ticker-box');
-        tickerBox.innerHTML = [...jobArray, ...jobArray].map(job => `
-            <div class="ticker-item"><span>ACTIVE:</span> ${job.toUpperCase()}</div>
-        `).join('');
-
-        // Render Stacked Cards in Talent Page
-        const stack = document.getElementById('job-stack');
-        stack.innerHTML = jobArray.map((job, i) => `
-            <div class="opp-card">
-                <div class="card-tag">MANDATE // REF 00${i+1}</div>
-                <h2 class="main-head" style="font-size: 2.5rem; margin-bottom: 2rem;">${job}</h2>
-                <a href="mailto:contact@pursu.com?subject=Inquiry: ${job}" class="cta-button" style="padding: 1rem 2rem; font-size: 0.6rem;">ENQUIRE</a>
+    function renderJobs() {
+        const feed = document.getElementById('job-feed');
+        feed.innerHTML = jobs.map(job => `
+            <div class="job-card">
+                <div class="job-info">
+                    <div class="job-meta"><span>${job.industry}</span> • <span>${job.posted}</span></div>
+                    <h3>${job.title}</h3>
+                    <div class="job-meta"><span class="salary">${job.salary}</span> <span>${job.loc}</span></div>
+                </div>
+                <a href="#" class="view-job">VIEW DETAILS</a>
             </div>
         `).join('');
+
+        // Also update ticker
+        const tickerBox = document.getElementById('ticker-box');
+        const tickerItems = [...jobs, ...jobs].map(j => `
+            <div class="ticker-item"><span>ACTIVE:</span> ${j.title.toUpperCase()} [${j.salary}]</div>
+        `).join('');
+        tickerBox.innerHTML = tickerItems;
     }
 
-    // Interactive Spotlight
+    // Cursor Spotlight
     const spotlight = document.getElementById('cursor-spotlight');
     document.addEventListener('mousemove', (e) => {
         spotlight.style.left = e.clientX + 'px';
         spotlight.style.top = e.clientY + 'px';
     });
 
-    window.addEventListener('load', () => {
-        fetchJobs();
-        const overlay = document.getElementById('intro-overlay');
-        const wm = document.getElementById('wm');
-
-        setTimeout(() => {
-            overlay.classList.add('melt-away');
-            setTimeout(() => { wm.classList.add('reveal'); }, 800);
-            setTimeout(() => { overlay.style.display = 'none'; }, 1500); 
-        }, 1500);
-    });
-
-    setInterval(fetchJobs, 60000);
+    window.onload = renderJobs;
 </script>
 </body>
 </html>
