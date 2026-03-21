@@ -70,21 +70,29 @@
             justify-content: center; align-items: center; text-align: center;
         }
 
-        /* WATERMARK FIX: Container handles reveal, text handles float */
+        /* GLITCH FIX: Container handles the reveal entrance */
         .wm-container {
             opacity: 0;
             transform: translateY(30px);
             transition: all 1.5s cubic-bezier(0.2, 0.8, 0.2, 1);
             margin-bottom: -4rem;
             z-index: 0;
+            pointer-events: none; /* Keeps it from blocking buttons */
         }
 
+        /* GLITCH FIX: Sub-pixel rendering and translate3d for smooth float */
         .logo-watermark {
             font-family: 'Montserrat', sans-serif;
             font-size: clamp(8rem, 25vw, 15rem);
             font-weight: 700; letter-spacing: -0.05em;
             background: linear-gradient(135deg, rgba(166, 137, 102, 0.25) 0%, rgba(255,255,255,0.02) 100%);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            
+            /* High-end smoothing properties */
+            backface-visibility: hidden;
+            -webkit-font-smoothing: antialiased;
+            transform: translateZ(0); 
+            
             animation: float 6s ease-in-out infinite;
             display: block;
         }
@@ -99,6 +107,7 @@
         .main-head i { font-style: italic; font-weight: 500; color: var(--bronze-accent); }
 
         .cta-button {
+            position: relative; z-index: 5;
             font-family: 'Montserrat', sans-serif; font-weight: 700;
             background: var(--bronze-accent); backdrop-filter: blur(10px);
             color: #fff; padding: 1.4rem 4rem; text-decoration: none;
@@ -107,7 +116,7 @@
         }
         .cta-button:hover { background: var(--bronze-hover); transform: translateY(-5px) !important; transition: 0.4s; }
 
-        /* --- NEWSROOM GRADE TICKER --- */
+        /* --- BROADCAST-GRADE TICKER --- */
         .market-ticker {
             position: fixed; bottom: 0; width: 100%; background: #000;
             border-top: 1px solid rgba(166, 137, 102, 0.3); padding: 15px 0; z-index: 50;
@@ -117,7 +126,7 @@
         .ticker-track {
             display: flex; flex-shrink: 0; white-space: nowrap;
             will-change: transform;
-            animation: cnnScroll 45s linear infinite;
+            animation: cnnScroll 50s linear infinite;
         }
 
         .ticker-item {
@@ -129,12 +138,17 @@
         
         .ticker-item span { color: var(--bronze-accent); font-weight: 900; margin-right: 12px; }
 
+        /* Smoother transform-based scrolling */
         @keyframes cnnScroll {
             from { transform: translate3d(0, 0, 0); }
             to { transform: translate3d(-100%, 0, 0); }
         }
 
-        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+        @keyframes float {
+            0% { transform: translate3d(0, 0, 0); }
+            50% { transform: translate3d(0, -18px, 0); }
+            100% { transform: translate3d(0, 0, 0); }
+        }
 
         .reveal { opacity: 0.7 !important; transform: translateY(0) !important; }
         .reveal-full { opacity: 1 !important; transform: translateY(0) !important; }
@@ -195,7 +209,7 @@
             <div class="ticker-item"><span>LIVE //</span> ${job.toUpperCase()}</div>
         `).join('');
 
-        // Double-buffer for a perfectly seamless CNN-style loop
+        // Using two identical tracks for a mathematically perfect loop
         tickerBox.innerHTML = `
             <div class="ticker-track">${trackContent}</div>
             <div class="ticker-track">${trackContent}</div>
@@ -211,7 +225,8 @@
     });
 
     window.addEventListener('load', () => {
-        fetchJobs();
+        fetchJobs(); 
+        
         const overlay = document.getElementById('intro-overlay');
         const wm = document.getElementById('wm');
         const content = document.getElementById('home-page-content');
