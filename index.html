@@ -152,3 +152,109 @@
     <div id="intro-overlay">
         <img src="logo.png" alt="Pursu Logo" class="melting-logo">
     </div>
+
+    <nav>
+        <div class="logo-text" onclick="showSection('home-page')">PURSU.</div>
+        <div class="nav-links">
+            <a href="javascript:void(0)" onclick="showSection('talent-page')">Talent</a>
+            <a href="javascript:void(0)" onclick="showSection('home-page')">Employers</a>
+            <a href="javascript:void(0)" onclick="showSection('testimony-page')">Our Testimony</a>
+            <a href="mailto:contact@pursu.com">Contact</a>
+        </div>
+    </nav>
+
+    <div class="logo-watermark" id="wm">Pursu.</div>
+
+    <section class="content-section active" id="home-page">
+        <span class="sub-head">Recruitment Redefined</span>
+        <h1 class="main-head">Pursuing the<br><i>Perfect Match</i></h1>
+        <a href="javascript:void(0)" onclick="showSection('talent-page')" class="cta-button">EXPLORE OPPORTUNITIES</a>
+    </section>
+
+    <section class="content-section" id="talent-page">
+        <div class="stack-container" id="job-stack">
+            </div>
+    </section>
+
+    <section class="content-section" id="testimony-page">
+        <div class="text-block">
+            <span class="sub-head" style="color: var(--bronze-accent);">Our Philosophy</span>
+            <h2 class="main-head" style="margin-bottom: 2rem;">Elite Talent. <br><i>Absolute Transparency.</i></h2>
+            <p>Pursu was founded on a simple mandate: cut the noise. We don't believe in volume; we believe in architectural precision.</p>
+            <p>By focusing exclusively on Tier 1 Software Engineers and the world's most ambitious firms, we ensure every match is a masterstroke.</p>
+            <a href="mailto:contact@pursu.com" class="cta-button">INITIATE PARTNERSHIP</a>
+        </div>
+    </section>
+
+    <div class="market-ticker">
+        <div class="ticker-content" id="ticker-box">
+            <div class="ticker-item"><span>SYSTEM:</span> INITIALIZING SECURE FEED...</div>
+        </div>
+    </div>
+
+<script>
+    const G_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS2qYZ17GlB-55wPZSRcX82Ap4WrrfUFcjw8YK7pyNgGFEm8P8dZK5qe-1ob01A9GhhJRa4luCTL1rj/pub?gid=0&single=true&output=csv';
+    const fallbackJobs = ["Executive Director", "Senior Technical Lead", "VP of Operations", "Head of Talent", "Chief of Staff"];
+
+    function showSection(id) {
+        document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        
+        // Update nav active state
+        document.querySelectorAll('.nav-links a').forEach(a => {
+            a.classList.toggle('active', a.innerText.toLowerCase().includes(id.split('-')[0]));
+        });
+    }
+
+    async function fetchJobs() {
+        try {
+            const response = await fetch(`${G_URL}&cb=${Date.now()}`);
+            const data = await response.text();
+            const rows = data.split('\n').map(row => row.replace(/"/g, '').trim()).filter(row => row.length > 2);
+            renderContent(rows.length > 0 ? rows : fallbackJobs);
+        } catch (e) {
+            renderContent(fallbackJobs);
+        }
+    }
+
+    function renderContent(jobArray) {
+        // Render Ticker
+        const tickerBox = document.getElementById('ticker-box');
+        tickerBox.innerHTML = [...jobArray, ...jobArray].map(job => `
+            <div class="ticker-item"><span>ACTIVE:</span> ${job.toUpperCase()}</div>
+        `).join('');
+
+        // Render Stacked Cards in Talent Page
+        const stack = document.getElementById('job-stack');
+        stack.innerHTML = jobArray.map((job, i) => `
+            <div class="opp-card">
+                <div class="card-tag">MANDATE // REF 00${i+1}</div>
+                <h2 class="main-head" style="font-size: 2.5rem; margin-bottom: 2rem;">${job}</h2>
+                <a href="mailto:contact@pursu.com?subject=Inquiry: ${job}" class="cta-button" style="padding: 1rem 2rem; font-size: 0.6rem;">ENQUIRE</a>
+            </div>
+        `).join('');
+    }
+
+    // Interactive Spotlight
+    const spotlight = document.getElementById('cursor-spotlight');
+    document.addEventListener('mousemove', (e) => {
+        spotlight.style.left = e.clientX + 'px';
+        spotlight.style.top = e.clientY + 'px';
+    });
+
+    window.addEventListener('load', () => {
+        fetchJobs();
+        const overlay = document.getElementById('intro-overlay');
+        const wm = document.getElementById('wm');
+
+        setTimeout(() => {
+            overlay.classList.add('melt-away');
+            setTimeout(() => { wm.classList.add('reveal'); }, 800);
+            setTimeout(() => { overlay.style.display = 'none'; }, 1500); 
+        }, 1500);
+    });
+
+    setInterval(fetchJobs, 60000);
+</script>
+</body>
+</html>
