@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pursu. | Talent Portal</title>
+    <title>Pursu. | Pursuing the Perfect Match</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,500;1,700&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
@@ -24,7 +24,7 @@
             background-color: var(--bg-dark);
             color: var(--cream-white);
             font-family: 'EB Garamond', serif; 
-            line-height: 1.4;
+            line-height: 1.2;
             overflow-x: hidden;
         }
 
@@ -36,16 +36,25 @@
         }
 
         #cursor-spotlight {
-            position: fixed; top: 0; left: 0; width: 500px; height: 500px;
-            background: radial-gradient(circle, rgba(166, 137, 102, 0.08) 0%, transparent 70%);
+            position: fixed; top: 0; left: 0; width: 450px; height: 450px;
+            background: radial-gradient(circle, rgba(166, 137, 102, 0.12) 0%, transparent 70%);
             border-radius: 50%; pointer-events: none;
             transform: translate(-50%, -50%); z-index: 1; 
         }
 
+        /* --- INTRO OVERLAY --- */
+        #intro-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
+            background-color: #000000; display: flex; justify-content: center; align-items: center;
+            z-index: 1000; transition: opacity 1.5s ease, filter 1.5s ease;
+        }
+        .melting-logo { width: 180px; mix-blend-mode: screen; filter: contrast(1.2) brightness(1.1); }
+        .melt-away { filter: blur(35px) opacity(0); pointer-events: none; }
+
         /* --- NAVIGATION --- */
         nav {
             display: flex; justify-content: space-between; align-items: center;
-            padding: 2.5rem 10%; position: fixed; width: 100%;
+            padding: 2.5rem 10%; position: absolute; width: 100%;
             z-index: 100; font-family: 'Montserrat', sans-serif;
         }
         .logo-text { font-weight: 700; letter-spacing: 6px; font-size: 1.2rem; color: var(--bronze-accent); }
@@ -56,9 +65,9 @@
         }
         .nav-links a:hover { color: var(--bronze-accent); }
 
-        /* --- HERO SECTION (ELEVATED) --- */
+        /* --- HERO SECTION --- */
         .hero {
-            height: 70vh; display: flex; flex-direction: column;
+            height: 100vh; display: flex; flex-direction: column;
             justify-content: center; align-items: center; text-align: center;
             position: relative;
         }
@@ -67,112 +76,90 @@
             font-family: 'Montserrat', sans-serif;
             font-size: clamp(8rem, 25vw, 15rem);
             font-weight: 700; letter-spacing: -0.05em;
-            background: linear-gradient(135deg, rgba(166, 137, 102, 0.2) 0%, rgba(255,255,255,0.01) 100%);
+            background: linear-gradient(135deg, rgba(166, 137, 102, 0.25) 0%, rgba(255,255,255,0.02) 100%);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            margin-bottom: 2rem; /* Increased from -4rem to float higher */
-            transform: translateY(-20px); /* Lifted up */
+            opacity: 0; margin-bottom: 2rem; /* Adjusted higher */
+            transform: translateY(-20px); 
+            transition: all 1.5s cubic-bezier(0.2, 0.8, 0.2, 1);
             animation: float 6s ease-in-out infinite;
         }
 
-        /* --- SEARCH & FILTERS (UTILITY) --- */
-        .search-area {
-            width: 100%; max-width: 1100px; margin: -10vh auto 5vh auto;
-            padding: 0 5%; z-index: 50; position: relative;
-        }
-
-        .search-box {
-            background: var(--glass);
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(166, 137, 102, 0.3);
-            padding: 10px;
-            display: grid;
-            grid-template-columns: 2fr 1fr 1fr 120px;
-            gap: 10px;
-        }
-
-        input, select {
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(255,255,255,0.05);
-            padding: 15px;
-            color: var(--cream-white);
+        #home-page-content { opacity: 0; transform: translateY(20px); transition: all 1.5s ease 0.3s; z-index: 2; }
+        .sub-head {
+            font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5rem;
+            color: rgba(255,255,255,0.5); display: block; margin-bottom: 1rem;
             font-family: 'Montserrat', sans-serif;
-            font-size: 0.75rem;
-            outline: none;
-            transition: 0.3s;
+        }
+        .main-head { font-weight: 400; font-size: clamp(2.5rem, 7vw, 4rem); line-height: 1.1; margin-bottom: 3.5rem; }
+        .main-head i { font-style: italic; font-weight: 500; color: var(--bronze-accent); }
+
+        .cta-button {
+            font-family: 'Montserrat', sans-serif; font-weight: 700;
+            background: var(--bronze-accent); backdrop-filter: blur(10px);
+            color: #fff; padding: 1.4rem 4rem; text-decoration: none;
+            font-size: 0.8rem; letter-spacing: 0.2rem; border: 1px solid rgba(255, 255, 255, 0.15);
+            opacity: 0; transform: translateY(10px); transition: all 1s ease 0.6s;
+        }
+        .cta-button:hover { background: var(--bronze-hover); transform: translateY(-5px) !important; transition: 0.4s; }
+
+        /* --- TALENT FEED SECTION (HIDDEN INITIALLY) --- */
+        #talent-section {
+            display: none;
+            padding: 100px 10%;
+            opacity: 0;
+            transition: opacity 1s ease;
         }
 
-        input:focus { border-color: var(--bronze-accent); background: rgba(166, 137, 102, 0.05); }
-
-        .search-btn {
-            background: var(--bronze-accent);
-            color: white; border: none; font-family: 'Montserrat', sans-serif;
-            font-weight: 700; letter-spacing: 1px; transition: 0.4s;
+        .search-container {
+            max-width: 1100px; margin: 0 auto 50px auto;
+            display: grid; grid-template-columns: 2fr 1fr 1fr 120px; gap: 10px;
         }
-        .search-btn:hover { background: var(--bronze-hover); letter-spacing: 2px; }
 
-        /* --- JOB BOARD (CLARITY) --- */
-        .job-feed {
-            width: 100%; max-width: 1100px; margin: 0 auto 150px auto;
-            padding: 0 5%; display: flex; flex-direction: column; gap: 15px;
+        .search-container input, .search-container select {
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(166, 137, 102, 0.2);
+            padding: 15px; color: white; font-family: 'Montserrat'; font-size: 0.7rem; outline: none;
         }
+
+        .search-container button {
+            background: var(--bronze-accent); border: none; color: white; font-family: 'Montserrat'; font-weight: 700;
+        }
+
+        .job-grid { max-width: 1100px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
 
         .job-card {
-            background: rgba(255,255,255,0.02);
-            border: 1px solid rgba(255,255,255,0.05);
-            padding: 2.5rem;
-            display: flex; justify-content: space-between; align-items: center;
-            transition: 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
-        }
-
-        .job-card:hover {
-            background: rgba(166, 137, 102, 0.03);
-            border-color: var(--bronze-accent);
-            transform: translateX(10px);
-        }
-
-        .job-main h2 {
-            font-family: 'EB Garamond', serif;
-            font-size: 1.8rem; font-weight: 400; color: var(--bronze-accent);
-            margin-bottom: 8px;
-        }
-
-        .job-details {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 0.65rem; text-transform: uppercase; letter-spacing: 2px;
-            color: rgba(255,255,255,0.4);
-        }
-
-        .job-details span { margin-right: 25px; }
-        .job-details b { color: var(--cream-white); font-weight: 700; }
-
-        .apply-link {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 0.7rem; font-weight: 700; letter-spacing: 2px;
-            color: var(--cream-white); text-decoration: none;
-            padding: 12px 30px; border: 1px solid var(--bronze-accent);
+            background: var(--glass); border: 1px solid rgba(255,255,255,0.05);
+            padding: 2rem; display: flex; justify-content: space-between; align-items: center;
             transition: 0.4s;
         }
 
-        .apply-link:hover { background: var(--bronze-accent); color: white; }
+        .job-card:hover { border-color: var(--bronze-accent); background: rgba(166, 137, 102, 0.05); transform: translateX(5px); }
+        
+        .job-title { font-size: 1.8rem; color: var(--bronze-accent); margin-bottom: 5px; }
+        .job-meta { font-family: 'Montserrat'; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 2px; color: rgba(255,255,255,0.4); }
+        .job-meta b { color: white; margin-right: 15px; }
 
-        /* --- TICKER --- */
+        .apply-btn {
+            font-family: 'Montserrat'; font-size: 0.7rem; font-weight: 700; color: white;
+            text-decoration: none; border: 1px solid var(--bronze-accent); padding: 10px 25px; transition: 0.3s;
+        }
+        .apply-btn:hover { background: var(--bronze-accent); }
+
+        /* --- LIVE MARKET TICKER --- */
         .market-ticker {
             position: fixed; bottom: 0; width: 100%; background: rgba(0,0,0,0.9);
-            border-top: 1px solid rgba(166, 137, 102, 0.2); padding: 15px 0; z-index: 110;
+            border-top: 1px solid rgba(166, 137, 102, 0.2); padding: 15px 0; z-index: 150;
             font-family: 'Montserrat', sans-serif; font-size: 0.6rem;
             letter-spacing: 0.2rem; text-transform: uppercase; overflow: hidden; white-space: nowrap;
         }
-        .ticker-content { display: inline-block; animation: tickerScroll 35s linear infinite; }
+        .ticker-content { display: inline-block; animation: tickerScroll 25s linear infinite; }
         .ticker-item { display: inline-block; margin-right: 5rem; color: rgba(255,255,255,0.4); }
         .ticker-item span { color: var(--bronze-accent); font-weight: 700; margin-right: 10px; }
 
         @keyframes tickerScroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-        @keyframes float { 0%, 100% { transform: translateY(-20px); } 50% { transform: translateY(-40px); } }
+        @keyframes float { 0%, 100% { transform: translateY(-20px); } 50% { transform: translateY(-45px); } }
 
-        @media (max-width: 900px) {
-            .search-box { grid-template-columns: 1fr; }
-            .job-card { flex-direction: column; align-items: flex-start; gap: 20px; }
-        }
+        .reveal { opacity: 0.7 !important; transform: translateY(-20px) !important; }
+        .reveal-full { opacity: 1 !important; transform: translateY(0) !important; }
     </style>
 </head>
 <body>
@@ -180,88 +167,121 @@
     <div class="noise-overlay"></div>
     <div id="cursor-spotlight"></div>
 
+    <div id="intro-overlay">
+        <img src="logo.png" alt="Pursu Logo" class="melting-logo">
+    </div>
+
     <nav>
         <div class="logo-text">PURSU.</div>
         <div class="nav-links">
-            <a href="#">Talent</a>
+            <a href="#" onclick="showHome()">Home</a>
+            <a href="#" onclick="showTalent()">Talent</a>
             <a href="#">Employers</a>
-            <a href="#">Our Testimony</a>
             <a href="#">Contact</a>
         </div>
     </nav>
 
-    <section class="hero">
-        <div class="logo-watermark">Pursu.</div>
-        <div style="z-index: 10; margin-top: -50px;">
-            <span style="font-family: 'Montserrat'; font-size: 0.7rem; letter-spacing: 6px; text-transform: uppercase; color: var(--bronze-accent);">Talent Network</span>
-            <h1 style="font-size: 3.5rem; font-weight: 400; margin-top: 10px;">The <i>Elite</i> Job Board</h1>
+    <section class="hero" id="hero-section">
+        <div class="logo-watermark" id="wm">Pursu.</div>
+        <div id="home-page-content">
+            <span class="sub-head">Recruitment Redefined</span>
+            <h1 class="main-head">Pursuing the<br><i>Perfect Match</i></h1>
+            <a href="javascript:void(0)" class="cta-button" id="btn" onclick="showTalent()">EXPLORE OPPORTUNITIES</a>
         </div>
     </section>
 
-    <div class="search-area">
-        <div class="search-box">
-            <input type="text" placeholder="Keywords (e.g. Director, SaaS)">
-            <select>
-                <option>Specialization</option>
-                <option>Finance</option>
-                <option>Technology</option>
-                <option>Creative</option>
-            </select>
-            <select>
-                <option>Location</option>
-                <option>Remote</option>
-                <option>New York</option>
-                <option>London</option>
-            </select>
-            <button class="search-btn">SEARCH</button>
+    <section id="talent-section">
+        <div class="search-container">
+            <input type="text" placeholder="Keywords (e.g. Director, Architecture)">
+            <select><option>All Industries</option><option>Finance</option><option>Technology</option></select>
+            <select><option>Remote</option><option>New York</option><option>London</option></select>
+            <button>SEARCH</button>
         </div>
-    </div>
-
-    <section class="job-feed" id="feed">
-        </section>
+        <div class="job-grid" id="job-feed">
+            </div>
+    </section>
 
     <div class="market-ticker">
         <div class="ticker-content" id="ticker-box">
-            <div class="ticker-item"><span>SYSTEM:</span> STREAMING LATEST OPPORTUNITIES...</div>
+            <div class="ticker-item"><span>SYSTEM:</span> INITIALIZING SECURE FEED...</div>
         </div>
     </div>
 
 <script>
-    const jobData = [
-        { role: "Executive Director", type: "Full-Time", pay: "$180,000 - $220,000", loc: "New York / Hybrid", cat: "Leadership" },
-        { role: "Senior Technical Architect", type: "Contract", pay: "$120 - $150 / hr", loc: "Remote", cat: "Technology" },
-        { role: "VP of Product Marketing", type: "Full-Time", pay: "$165,000 - $195,000", loc: "Austin, TX", cat: "Marketing" },
-        { role: "Lead Counsel", type: "Full-Time", pay: "$210,000+", loc: "San Francisco", cat: "Legal" }
+    const G_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS2qYZ17GlB-55wPZSRcX82Ap4WrrfUFcjw8YK7pyNgGFEm8P8dZK5qe-1ob01A9GhhJRa4luCTL1rj/pub?gid=0&single=true&output=csv';
+    
+    // Mock data for immediate Robert Half clarity
+    const fallbackJobs = [
+        {title: "Executive Director", pay: "$180k - $220k", loc: "NY / Hybrid", cat: "Leadership"},
+        {title: "VP of Engineering", pay: "$250k - $300k", loc: "Remote", cat: "Technology"},
+        {title: "Head of Talent", pay: "$150k - $190k", loc: "London", cat: "HR"}
     ];
 
-    function initPortal() {
-        const feed = document.getElementById('feed');
-        feed.innerHTML = jobData.map(job => `
-            <div class="job-card">
-                <div class="job-main">
-                    <div class="job-details"><span>${job.cat}</span> • <span>Posted 2h Ago</span></div>
-                    <h2>${job.role}</h2>
-                    <div class="job-details">
-                        <b>${job.pay}</b> <span>${job.loc}</span> <span>[ ${job.type} ]</span>
-                    </div>
-                </div>
-                <a href="#" class="apply-link">VIEW ROLE</a>
-            </div>
-        `).join('');
+    async function fetchJobs() {
+        try {
+            const response = await fetch(`${G_URL}&cb=${Date.now()}`);
+            const data = await response.text();
+            const rows = data.split('\n').map(r => r.replace(/"/g, '').trim()).filter(r => r.length > 2);
+            renderContent(rows.length > 0 ? rows : fallbackJobs.map(j => j.title));
+        } catch (e) {
+            renderContent(fallbackJobs.map(j => j.title));
+        }
+    }
 
+    function renderContent(jobArray) {
+        // Render Ticker
         const tickerBox = document.getElementById('ticker-box');
-        tickerBox.innerHTML = [...jobData, ...jobData].map(j => `
-            <div class="ticker-item"><span>ACTIVE:</span> ${j.role.toUpperCase()} | ${j.pay}</div>
+        tickerBox.innerHTML = [...jobArray, ...jobArray].map(job => `<div class="ticker-item"><span>ACTIVE:</span> ${job.toUpperCase()}</div>`).join('');
+
+        // Render Job Feed (Detailed)
+        const jobFeed = document.getElementById('job-feed');
+        jobFeed.innerHTML = fallbackJobs.map(j => `
+            <div class="job-card">
+                <div>
+                    <div class="job-meta"><span>${j.cat}</span> • <span>Active Now</span></div>
+                    <div class="job-title">${j.title}</div>
+                    <div class="job-meta"><b>${j.pay}</b> <span>${j.loc}</span></div>
+                </div>
+                <a href="#" class="apply-btn">VIEW ROLE</a>
+            </div>
         `).join('');
     }
 
+    function showTalent() {
+        document.getElementById('home-page-content').style.opacity = '0';
+        document.getElementById('wm').style.transform = 'translateY(-150px) scale(0.8)';
+        document.getElementById('wm').style.opacity = '0.1';
+        
+        setTimeout(() => {
+            document.getElementById('hero-section').style.display = 'none';
+            document.getElementById('talent-section').style.display = 'block';
+            document.body.style.overflowY = 'auto';
+            setTimeout(() => { document.getElementById('talent-section').style.opacity = '1'; }, 100);
+        }, 800);
+    }
+
+    function showHome() {
+        location.reload(); // Simplest way to reset the complex animations
+    }
+
+    // Spotlight & Reveal
     const spotlight = document.getElementById('cursor-spotlight');
     document.addEventListener('mousemove', (e) => {
         spotlight.style.left = e.clientX + 'px';
         spotlight.style.top = e.clientY + 'px';
     });
 
-    window.onload = initPortal;
+    window.addEventListener('load', () => {
+        fetchJobs();
+        setTimeout(() => {
+            document.getElementById('intro-overlay').classList.add('melt-away');
+            setTimeout(() => {
+                document.getElementById('wm').classList.add('reveal');
+                document.getElementById('home-page-content').classList.add('reveal-full');
+                document.getElementById('btn').classList.add('reveal-full');
+            }, 800);
+        }, 1500);
+    });
 </script>
 </body>
 </html>
