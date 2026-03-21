@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Pursu. | Pursuing the Perfect Match</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -16,7 +16,7 @@
             --bronze-hover: rgba(186, 157, 122, 1);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; cursor: default; }
+        * { margin: 0; padding: 0; box-sizing: border-box; cursor: default; -webkit-tap-highlight-color: transparent; }
         a, button { cursor: pointer; }
 
         body {
@@ -25,6 +25,8 @@
             font-family: 'EB Garamond', serif; 
             overflow: hidden;
             line-height: 1.2;
+            width: 100vw;
+            height: 100vh;
         }
 
         /* --- PRESTIGE OVERLAYS --- */
@@ -39,6 +41,7 @@
             background: radial-gradient(circle, rgba(166, 137, 102, 0.12) 0%, transparent 70%);
             border-radius: 50%; pointer-events: none;
             transform: translate(-50%, -50%); z-index: 1; 
+            display: none; /* Hidden by default, shown on move */
         }
 
         /* --- INTRO OVERLAY --- */
@@ -47,108 +50,87 @@
             background-color: #000000; display: flex; justify-content: center; align-items: center;
             z-index: 1000; transition: opacity 1.5s ease, filter 1.5s ease;
         }
-        .melting-logo { width: 180px; mix-blend-mode: screen; filter: contrast(1.2) brightness(1.1); }
+        .melting-logo { width: 150px; mix-blend-mode: screen; filter: contrast(1.2) brightness(1.1); }
         .melt-away { filter: blur(35px) opacity(0); pointer-events: none; }
 
         /* --- NAVIGATION --- */
         nav {
             display: flex; justify-content: space-between; align-items: center;
-            padding: 2.5rem 10%; position: absolute; width: 100%;
+            padding: 2rem 5%; position: absolute; width: 100%;
             z-index: 10; font-family: 'Montserrat', sans-serif;
         }
-        .logo-text { font-weight: 700; letter-spacing: 6px; font-size: 1.2rem; color: var(--bronze-accent); }
+        .logo-text { font-weight: 700; letter-spacing: 4px; font-size: 1rem; color: var(--bronze-accent); }
         .nav-links a {
             text-decoration: none; color: rgba(255, 255, 255, 0.4);
-            font-size: 0.75rem; letter-spacing: 0.15rem; text-transform: uppercase;
-            transition: 0.4s; margin-left: 3rem; font-weight: 700;
+            font-size: 0.65rem; letter-spacing: 0.1rem; text-transform: uppercase;
+            transition: 0.4s; margin-left: 1.5rem; font-weight: 700;
         }
-        .nav-links a:hover { color: var(--bronze-accent); }
 
         /* --- HERO SECTION --- */
         .hero {
             height: 100vh; display: flex; flex-direction: column;
             justify-content: center; align-items: center; text-align: center;
+            padding: 0 10%;
         }
 
-        /* GLITCH FIX: Container handles the reveal entrance */
         .wm-container {
-            opacity: 0;
-            transform: translateY(30px);
+            opacity: 0; transform: translateY(30px);
             transition: all 1.5s cubic-bezier(0.2, 0.8, 0.2, 1);
-            margin-bottom: -4rem;
-            z-index: 0;
-            pointer-events: none; /* Keeps it from blocking buttons */
+            margin-bottom: -2rem; z-index: 0; pointer-events: none;
         }
 
-        /* GLITCH FIX: Sub-pixel rendering and translate3d for smooth float */
         .logo-watermark {
             font-family: 'Montserrat', sans-serif;
-            font-size: clamp(8rem, 25vw, 15rem);
+            font-size: clamp(5rem, 20vw, 15rem);
             font-weight: 700; letter-spacing: -0.05em;
             background: linear-gradient(135deg, rgba(166, 137, 102, 0.25) 0%, rgba(255,255,255,0.02) 100%);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            
-            /* High-end smoothing properties */
-            backface-visibility: hidden;
-            -webkit-font-smoothing: antialiased;
-            transform: translateZ(0); 
-            
-            animation: float 6s ease-in-out infinite;
+            backface-visibility: hidden; -webkit-font-smoothing: antialiased;
+            transform: translateZ(0); animation: float 6s ease-in-out infinite;
             display: block;
         }
 
-        #home-page-content { opacity: 0; transform: translateY(20px); transition: all 1.5s ease 0.3s; }
+        #home-page-content { opacity: 0; transform: translateY(20px); transition: all 1.5s ease 0.3s; width: 100%; }
         .sub-head {
-            font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5rem;
-            color: rgba(255,255,255,0.5); display: block; margin-bottom: 1rem;
+            font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.3rem;
+            color: rgba(255,255,255,0.5); display: block; margin-bottom: 0.8rem;
             font-family: 'Montserrat', sans-serif;
         }
-        .main-head { font-weight: 400; font-size: clamp(2rem, 7vw, 3.5rem); line-height: 1.1; margin-bottom: 3.5rem; }
+        .main-head { font-weight: 400; font-size: clamp(1.8rem, 8vw, 3.5rem); line-height: 1.1; margin-bottom: 2.5rem; }
         .main-head i { font-style: italic; font-weight: 500; color: var(--bronze-accent); }
 
         .cta-button {
             position: relative; z-index: 5;
             font-family: 'Montserrat', sans-serif; font-weight: 700;
             background: var(--bronze-accent); backdrop-filter: blur(10px);
-            color: #fff; padding: 1.4rem 4rem; text-decoration: none;
-            font-size: 0.8rem; letter-spacing: 0.2rem; border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #fff; padding: 1.2rem 2.5rem; text-decoration: none;
+            font-size: 0.7rem; letter-spacing: 0.15rem; border: 1px solid rgba(255, 255, 255, 0.15);
             opacity: 0; transform: translateY(10px); transition: all 1s ease 0.6s;
+            display: inline-block;
         }
-        .cta-button:hover { background: var(--bronze-hover); transform: translateY(-5px) !important; transition: 0.4s; }
 
-        /* --- BROADCAST-GRADE TICKER --- */
+        /* --- MOBILE SPECIFIC FIXES --- */
+        @media (max-width: 768px) {
+            nav { flex-direction: column; gap: 1rem; padding-top: 1.5rem; }
+            .nav-links a { margin: 0 0.8rem; font-size: 0.6rem; }
+            .logo-text { margin-bottom: 0.5rem; }
+            .cta-button { width: 80%; padding: 1.2rem 1rem; }
+            #cursor-spotlight { width: 300px; height: 300px; }
+            .ticker-item { padding: 0 2rem; font-size: 0.55rem; }
+        }
+
+        /* --- TICKER --- */
         .market-ticker {
             position: fixed; bottom: 0; width: 100%; background: #000;
-            border-top: 1px solid rgba(166, 137, 102, 0.3); padding: 15px 0; z-index: 50;
+            border-top: 1px solid rgba(166, 137, 102, 0.3); padding: 12px 0; z-index: 50;
             overflow: hidden; display: flex;
         }
-        
-        .ticker-track {
-            display: flex; flex-shrink: 0; white-space: nowrap;
-            will-change: transform;
-            animation: cnnScroll 50s linear infinite;
-        }
+        .ticker-track { display: flex; flex-shrink: 0; white-space: nowrap; will-change: transform; animation: cnnScroll 35s linear infinite; }
+        .ticker-item { display: flex; align-items: center; padding: 0 3rem; font-family: 'Montserrat', sans-serif; font-size: 0.6rem; letter-spacing: 0.15rem; text-transform: uppercase; color: rgba(255,255,255,0.4); }
+        .ticker-item span { color: var(--bronze-accent); font-weight: 900; margin-right: 10px; }
 
-        .ticker-item {
-            display: flex; align-items: center; padding: 0 4rem;
-            font-family: 'Montserrat', sans-serif; font-size: 0.65rem;
-            letter-spacing: 0.2rem; text-transform: uppercase;
-            color: rgba(255,255,255,0.4);
-        }
-        
-        .ticker-item span { color: var(--bronze-accent); font-weight: 900; margin-right: 12px; }
-
-        /* Smoother transform-based scrolling */
-        @keyframes cnnScroll {
-            from { transform: translate3d(0, 0, 0); }
-            to { transform: translate3d(-100%, 0, 0); }
-        }
-
-        @keyframes float {
-            0% { transform: translate3d(0, 0, 0); }
-            50% { transform: translate3d(0, -18px, 0); }
-            100% { transform: translate3d(0, 0, 0); }
-        }
+        @keyframes cnnScroll { from { transform: translate3d(0, 0, 0); } to { transform: translate3d(-100%, 0, 0); } }
+        @keyframes float { 0% { transform: translate3d(0, 0, 0); } 50% { transform: translate3d(0, -12px, 0); } 100% { transform: translate3d(0, 0, 0); } }
 
         .reveal { opacity: 0.7 !important; transform: translateY(0) !important; }
         .reveal-full { opacity: 1 !important; transform: translateY(0) !important; }
@@ -169,7 +151,6 @@
             <a href="#">Talent</a>
             <a href="#">Employers</a>
             <a href="#">Contact</a>
-            <a href="#">Our Testimony</a>
         </div>
     </nav>
 
@@ -184,49 +165,43 @@
         </div>
     </section>
 
-    <div class="market-ticker" id="ticker-box">
-        </div>
+    <div class="market-ticker" id="ticker-box"></div>
 
 <script>
     const G_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS2qYZ17GlB-55wPZSRcX82Ap4WrrfUFcjw8YK7pyNgGFEm8P8dZK5qe-1ob01A9GhhJRa4luCTL1rj/pub?gid=0&single=true&output=csv';
-    const fallbackJobs = ["Executive Director", "Senior Technical Lead", "VP of Operations", "Head of Talent", "Chief of Staff"];
+    const fallbackJobs = ["Executive Director", "Senior Technical Lead", "VP of Operations", "Head of Talent"];
 
     async function fetchJobs() {
         try {
             const response = await fetch(`${G_URL}&cb=${Date.now()}`);
-            if (!response.ok) throw new Error("Sync Interrupted");
             const data = await response.text();
             const rows = data.split('\n').map(row => row.replace(/"/g, '').trim()).filter(row => row.length > 2);
             renderTicker(rows.length > 0 ? rows : fallbackJobs);
-        } catch (e) {
-            renderTicker(fallbackJobs);
-        }
+        } catch (e) { renderTicker(fallbackJobs); }
     }
 
     function renderTicker(jobArray) {
         const tickerBox = document.getElementById('ticker-box');
-        const trackContent = jobArray.map(job => `
-            <div class="ticker-item"><span>LIVE //</span> ${job.toUpperCase()}</div>
-        `).join('');
-
-        // Using two identical tracks for a mathematically perfect loop
-        tickerBox.innerHTML = `
-            <div class="ticker-track">${trackContent}</div>
-            <div class="ticker-track">${trackContent}</div>
-        `;
+        const trackContent = jobArray.map(job => `<div class="ticker-item"><span>LIVE //</span> ${job.toUpperCase()}</div>`).join('');
+        tickerBox.innerHTML = `<div class="ticker-track">${trackContent}</div><div class="ticker-track">${trackContent}</div>`;
     }
 
     setInterval(fetchJobs, 60000);
 
+    // UNIFIED TOUCH & MOUSE SPOTLIGHT
     const spotlight = document.getElementById('cursor-spotlight');
-    document.addEventListener('mousemove', (e) => {
-        spotlight.style.left = e.clientX + 'px';
-        spotlight.style.top = e.clientY + 'px';
-    });
+    const updateSpotlight = (e) => {
+        spotlight.style.display = 'block';
+        const x = e.touches ? e.touches[0].clientX : e.clientX;
+        const y = e.touches ? e.touches[0].clientY : e.clientY;
+        spotlight.style.left = x + 'px';
+        spotlight.style.top = y + 'px';
+    };
+    document.addEventListener('mousemove', updateSpotlight);
+    document.addEventListener('touchmove', updateSpotlight);
 
     window.addEventListener('load', () => {
         fetchJobs(); 
-        
         const overlay = document.getElementById('intro-overlay');
         const wm = document.getElementById('wm');
         const content = document.getElementById('home-page-content');
